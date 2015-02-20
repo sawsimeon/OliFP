@@ -24,7 +24,6 @@ ALL <- cbind(Oligomerization, ALL)
 ## Seperate the Oligomer and Monomer
 set.seed(1)
 library(caret)
-library(AppliedPredictiveModeling)
 PCP_Monomer <- subset(PCP, Oligomerization == "Monomer")
 PCP_Oligomer <- subset(PCP, Oligomerization == "Oligomer")
 DPC_Monomer <- subset(DPC, Oligomerization == "Monomer")
@@ -40,8 +39,8 @@ DPC_PCP_Oligomer <- subset(DPC_PCP, Oligomerization == "Oligomer")
 ALL_Monomer <- subset(ALL, Oligomerization == "Monomer")
 ALL_Oligomer <- subset(ALL, Oligomerization == "Oligomer")
 ## Do Kennard Stone Data Partationing
-set.seed(6)
 library(prospectr)
+set.seed(6)
 x <- data.frame(PCP_Monomer)
 sel <- kenStone(x[-1], k = 150, metric = "mahal", pc=2)
 trainPCP_Monomer <- x[sel$model, ]
@@ -105,6 +104,7 @@ sel <- kenStone(x[-1], k = 149, metric = "mahal", pc=2)
 trainALL_Oligomer <- x[sel$model, ]
 testALL_Oligomer <- x[sel$test, ]
 ## bind Oligomer and Monomer or training set and testing set
+set.seed(400)
 PCP_Train <- rbind(trainPCP_Monomer, trainPCP_Oligomer)
 PCP_Test <- rbind(testPCP_Monomer, testPCP_Oligomer)
 DPC_Train <- rbind(trainDPC_Monomer, trainDPC_Oligomer)
@@ -121,6 +121,7 @@ ALL_Train <- rbind(trainALL_Monomer, trainALL_Oligomer)
 ALL_Test <- rbind(testALL_Monomer, testALL_Oligomer)
 ## Building Predictive Model for PCP, training set, 10-fold and testing set
 library(RWeka)
+set.seed(1)
 PCPfit <- J48(Oligomerization~., data = PCP_Train)
 summary(PCPfit)
 eval10fold <- evaluate_Weka_classifier(PCPfit,
@@ -137,6 +138,7 @@ external <- evaluate_Weka_classifier(PCPfit,
                                        class=TRUE)
 external
 ## Building Predictive Model for DPC, training set, 10-fold and testing set
+set.seed(2)
 DPCfit <- J48(Oligomerization~., data = DPC_Train)
 summary(DPCfit)
 eval10fold <- evaluate_Weka_classifier(DPCfit,
@@ -154,6 +156,7 @@ external <- evaluate_Weka_classifier(DPCfit,
 external
 
 ## Building Predictive Model for DPC, training set, 10-fold and testing set
+set.seed(3)
 AACfit <- J48(Oligomerization~., data = AAC_Train)
 summary(AACfit)
 eval10fold <- evaluate_Weka_classifier(AACfit,
@@ -171,6 +174,7 @@ external <- evaluate_Weka_classifier(AACfit,
 external
 
 ## Building Predictive Model for AAC_DPC, training set, 10-fold and testing set
+set.seed(4)
 AAC_DPCfit <- J48(Oligomerization~., data = AAC_DPC_Train)
 summary(AAC_DPCfit)
 eval10fold <- evaluate_Weka_classifier(AAC_DPCfit,
@@ -188,6 +192,7 @@ external <- evaluate_Weka_classifier(AAC_DPCfit,
 external
 
 ## Building Predictive Model for AAC_PCP, training set, 10-fold and testing set
+set.seed(5)
 AAC_PCPfit <- J48(Oligomerization~., data = AAC_PCP_Train)
 summary(AAC_PCPfit)
 eval10fold <- evaluate_Weka_classifier(AAC_PCPfit,
@@ -204,6 +209,7 @@ external <- evaluate_Weka_classifier(AAC_PCPfit,
                                      class=TRUE)
 external
 ## Building Predictive Model for DPC_PCP, training set, 10-fold and testing set
+set.seed(6)
 DPC_PCPfit <- J48(Oligomerization~., data = DPC_PCP_Train)
 summary(DPC_PCPfit)
 eval10fold <- evaluate_Weka_classifier(DPC_PCPfit,
@@ -220,7 +226,8 @@ external <- evaluate_Weka_classifier(DPC_PCPfit,
                                      class=TRUE)
 external
 
-## Building Predictive Model for DPC_PCP, training set, 10-fold and testing set
+## Building Predictive Model for ALL, training set, 10-fold and testing set
+set.seed(7)
 ALLfit <- J48(Oligomerization~., data = ALL_Train)
 summary(ALLfit)
 eval10fold <- evaluate_Weka_classifier(ALLfit,
