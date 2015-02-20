@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 library(RCurl)
 set.seed(3)
 x <- getURL("https://raw.githubusercontent.com/Rnewbie/OliFP/master/OliFP.csv")
