@@ -59,9 +59,11 @@ J48 <- lapply(x, function(x){
 })
 J48
 ```
-Performance table. 
+Performance table of J48 for training, 10-fold cross validation and external validation. 
 ```{r}
 library(knitr)
-OliFPJ48 <- read.csv("~/Downloads/OliFPJ48.csv")
+x <- getURL("https://raw.githubusercontent.com/Rnewbie/OliFP/master/OliFPJ48.csv")
+OliFPJ48 <- read.csv(text=x, header = TRUE)
 kable(OliFPJ48, align = 'c', format = "markdown")
 ```
+
