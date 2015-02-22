@@ -1,0 +1,67 @@
+---
+title: "Predicting the Oligomerization of Fluorescent Protein"
+author: "Rnewbie"
+date: "February 22, 2558 BE"
+output: pdf_document
+---
+```{r}
+library(RCurl)
+library(prospectr)
+library(caret)
+library(RWeka)
+set.seed(3)
+x <- getURL("https://raw.githubusercontent.com/Rnewbie/OliFP/master/OliFP.csv")
+OliFP <- read.csv(text=x, header = TRUE)
+data <- OliFP
+PCP <- data[, 2:532]
+DPC <- data[, 533:932]
+AAC <- data[, 933:952]
+AAC_DPC <- cbind(AAC, DPC)
+AAC_PCP <- cbind(AAC, PCP)
+DPC_PCP <- cbind(DPC, PCP)
+ALL <- data[, 5:952]
+Oligomerization <- data$Oligomerization
+set.seed(1)
+x <- list(AAC = AAC,
+          DPC = DPC,
+          PCP = PCP,
+          AAC_DPC = AAC_DPC,
+          AAC_PCP = AAC_PCP,
+          DPC_PCP = DPC_PCP,
+          ALL = ALL)
+J48 <- lapply(x, function(x){
+  data <- cbind(Oligomerization, x)
+  Monomer <- subset(data, Oligomerization == "Monomer")
+  Oligomer <- subset(data, Oligomerization == "Oligomer")
+  sel <- kenStone(Monomer[-1], k = 150, metric = "mahal", pc=2)
+  train_Monomer <- Monomer[sel$model, ]
+  test_Monomer <- Monomer[sel$test, ]
+  sel <- kenStone(Oligomer[-1], k = 149, metric = "mahal", pc=2)
+  train_Oligomer <- Oligomer[sel$model, ]
+  test_Oligomer <- Oligomer[sel$test, ]
+  Train <- rbind(train_Monomer, train_Oligomer)
+  Test <- rbind(test_Monomer, test_Oligomer)
+  x <- J48(Oligomerization~., data = Train)
+  cv <- evaluate_Weka_classifier(x,
+                                         numFolds=10,
+                                         complexity = FALSE,
+                                         seed=1,
+                                         class=TRUE)
+  external <- evaluate_Weka_classifier(x,
+                                       newdata = Test,
+                                       numFolds=10,
+                                       complexity = FALSE,
+                                       seed=1,
+                                       class=TRUE)
+  Model <- summary(x)
+  results <- list(Training = Model, Cross_Validation_10_Fold = cv, Testing = external)
+  return(results)
+})
+J48
+```
+Performance table. 
+```{r}
+library(knitr)
+OliFPJ48 <- read.csv("~/Downloads/OliFPJ48.csv")
+kable(OliFPJ48, align = 'c', format = "markdown")
+```
