@@ -244,3 +244,126 @@ external <- evaluate_Weka_classifier(ALLfit,
                                      class=TRUE)
 external
 
+
+
+#### this is for automation
+## automation 
+AAC <- read.csv("AAC.csv", header = TRUE)
+DPC <- read.csv("DPC.csv", header = TRUE)
+PCP <- read.csv("PCP.csv", header = TRUE)
+DPC <- data.frame(DPC)
+PCP <- data.frame(PCP)
+DPC_PCP <- cbind(DPC, PCP)
+Oligomerization <- read.csv("Oligomerization.csv", header = TRUE)
+Oligomerization <- Oligomerization$Oligomerization
+x <- list(DPC_PCP = DPC_PCP)
+Logistic <- lapply(x, function(x){
+  data <- cbind(Oligomerization, x)
+  Monomer <- subset(data, Oligomerization == "Monomer")
+  Oligomer <- subset(data, Oligomerization == "Oligomer")
+  sel <- kenStone(Monomer[-1], k = 162, metric = "mahal", pc=2)
+  train_Monomer <- Monomer[sel$model, ]
+  test_Monomer <- Monomer[sel$test, ]
+  sel <- kenStone(Oligomer[-1], k = 155, metric = "mahal", pc=2)
+  train_Oligomer <- Oligomer[sel$model, ]
+  test_Oligomer <- Oligomer[sel$test, ]
+  Train <- rbind(train_Monomer, train_Oligomer)
+  Test <- rbind(test_Monomer, test_Oligomer)
+  #x <- LMT(Oligomerization~., data = Train)
+  #cv <- evaluate_Weka_classifier(x,
+  #                              numFolds=10,
+  #                               complexity = FALSE,
+  #                              seed=1,
+  #                               class=TRUE)
+  #external <- evaluate_Weka_classifier(x,
+  #                                    newdata = Test,
+  #                                   numFolds=10,
+  #                                  complexity = FALSE,
+  #                                   seed=1,
+  #                                   class=TRUE)
+  Model <- summary(x)
+  results <- list(Train = Train, Test = Test)
+  return(results)
+})
+
+Train <- Logistic$DPC_PCP$Train
+Test <- Logistic$DPC_PCP$Test
+folds <- createFolds(Train$Oligomerization, k = 10)
+cv <- lapply(folds, function(x) {
+  train <- Train[x, ]
+  test <- Train[-x, ]
+  model <- randomForest(Oligomerization~., data = train, netree= 500, mtry = 30)
+  pred <- predict(model, test)
+  actual <- test$Oligomerization
+  matrix <- table(pred, actual)
+  unlist <- unlist(matrix)
+  return(unlist)
+})
+unlist <- unlist(cv)
+df <- data.frame(cv)
+x <- unlist(cv$Fold01)
+y <- unlist(cv$Fold02)
+x <- data.frame(x)
+y <- data.frame(y)
+results <- cbind(x$Freq, y$Freq)
+data <- data.frame(results)
+m = ncol(data)
+ACC  <- matrix(nrow = m, ncol = 1)
+SENS  <- matrix(nrow = m, ncol = 1)
+SPEC  <-matrix(nrow = m, ncol = 1)
+MCC <- matrix(nrow = m, ncol = 1)
+
+for(i in 1:m){ 
+  ACC[i,1]  = (data[1,i]+data[4,i])/(data[1,i]+data[2,i]+data[3,i]+data[4,i])*100
+  SENS[i,1]  =  (data[4,i])/(data[3,i]+data[4,i])*100
+  SPEC[i,1]  = (data[1,i]/(data[1,i]+data[2,i]))*100
+  MCC1      = (data[1,i]*data[4,i]) - (data[2,i]*data[3,i])
+  MCC2      =  (data[4,i]+data[2,i])*(data[4,i]+data[3,i])
+  MCC3      =  (data[1,i]+data[2,i])*(data[1,i]+data[3,i])
+  MCC4  =  sqrt(MCC2)*sqrt(MCC3)
+  
+  
+  MCC[i,1]  = MCC1/MCC4
+}
+
+
+Perf = data.frame (ACC,SENS,SPEC,MCC)
+Perf
+kable(Perf,
+      align = 'c',
+      format = "pandoc",
+      caption = "Studip Table")
+#extra
+
+
+
+write.csv(top10AAC, file = "top20AAC.csv")
+write.csv(top10DPC, file = "top20DPC.csv")
+write.csv(top10PCP, file = "top20PCP.csv")
+top10AAC <- read.csv("top20AAC.csv", header = TRUE)
+top10DPC <- read.csv("top30DPC.csv", header = TRUE)
+top10PCP <- read.csv("top30PCP.csv", header = TRUE)
+a <- data.frame(top10AAC)
+b <- data.frame(top10DPC)
+c <- data.frame(top10PCP)
+a$AAC <- factor(a$AAC, levels =a[order(a$Overall), "AAC"])
+b$DPC <- factor(b$DPC, levels =b[order(b$Overall), "DPC"])
+c$PCP <- factor(c$PCP, levels=c[order(c$Overall), "PCP"])
+x <- ggplot(a, aes(x= Overall, y = AAC)) +
+  geom_point(size=5, colour = "red") + coord_fixed(14.7) +
+  theme_bw() + ggtitle("AAC") + xlab("Feature Usage") + ylab("") +
+  scale_x_continuous(breaks = round(seq(min(0), max(100), by = 25),1), limits= c(0, 100))
+y <- ggplot(b, aes(x=Overall, y=DPC)) +
+  geom_point(size=5, colour = "blue") + coord_fixed(10) +
+  theme_bw() + ggtitle("DPC") + xlab("Feature Usage") + ylab("") +
+  scale_x_continuous(breaks = round(seq(min(0), max(100), by = 25),1), limits = c(0, 100))
+z <- ggplot(c, aes(x=Overall, y=PCP)) +
+  geom_point(size=5, colour= "green") + coord_fixed(11) +
+  theme_bw() + ggtitle("PCP") + xlab("Feature Usage") + ylab("") +
+  scale_x_continuous(breaks = round(seq(min(0), max(100), by = 25),1), limits = c(0, 100))
+grid.arrange(x, y, z, ncol = 3)
+
+
+
+###
+###C5imp(ruleModel, metric = "splits")
