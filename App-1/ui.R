@@ -12,12 +12,13 @@ shinyUI(
   titlePanel("Please Upload a Sequence of Fluorescent Protein"),
   sidebarLayout(
     wellPanel(
-    	tags$label("Please Insert a FASTA Format", id="Sequence"),
-    	tags$textarea(id="Sequence", rows=5, cols=125, style="width:80%;", "FASTA Format"),
+    	tags$label("Please Insert a FASTA Format",style="float: none; width: 80%;"),
+    	tags$textarea(id="Sequence", rows=5, cols=125, style="float: none; width:80%;", "FASTA Format"),
       fileInput('file1', 'Choose FASTA File',
                 accept=c('text/FASTA', 
 								 'FASTA', 
-								 '.fasta')),
+								 '.fasta')		 
+								 ),
       tags$hr(),
       radioButtons('quote', 'Protein Descriptors',
                   c(AAC='',
