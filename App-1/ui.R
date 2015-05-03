@@ -25,7 +25,7 @@ shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomeric state Predictor", 
 			) #sidebarLayout
 		), #tabPanel Submit Job
 
-	tabPanel("About", titlePanel("Fluorescent protein oligomerization"), includeMarkdown("about.md")),
+	tabPanel("About", titlePanel("Fluorescent protein oligomerization"), div(includeMarkdown("about.md"), align="justify")),
 	tabPanel("Citing Us", titlePanel("Citing Us"), includeMarkdown("citingus.md")),
 	tabPanel("Contact", titlePanel("Contact"), includeMarkdown("contact.md"))	
         
