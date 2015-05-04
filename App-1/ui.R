@@ -2,9 +2,9 @@ library(shiny)
 library(shinythemes)
 library(protr)
 
-shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomeric state Predictor", theme=shinytheme("cerulean"),
+shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", theme=shinytheme("cerulean"),
 	navbarPage(strong("FPOP"),
-	tabPanel("Submit Job", titlePanel("FPOP: Fluorescent Protein Oligomeric state Predictor"),
+	tabPanel("Submit Job", titlePanel("FPOP: Fluorescent Protein Oligomerization Predictor"),
 			sidebarLayout(
 				wellPanel(
 					tags$label("Step 1 - Enter your input sequence(s) in FASTA format",style="float: none; width: 100%;"),
