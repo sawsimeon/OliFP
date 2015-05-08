@@ -12,9 +12,7 @@ shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", t
 					tags$label("OR upload your FASTA file",style="float: none; width: 100%;"),
 					fileInput('file1', 'Choose file',accept=c('text/FASTA','FASTA','.fasta','.txt')),
 					tags$hr(),
-					radioButtons('quote', 'Step 2 - Select protein descriptors',c(AAC='', 'DPC'='"', 'PCP'="'"),'"'),
-					tags$hr(),
-					tags$label("Step 3 - Submit your job",style="float: none; width: 100%;"),
+					tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
 					submitButton("Submit")
 		    		), #wellPanel
 		    		
