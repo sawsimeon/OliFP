@@ -1,6 +1,15 @@
 library(shiny)
 library(shinythemes)
 library(protr)
+library(markdown)
+
+returnTextAreaInput2 <- function(inputId, label, value = "") {
+  tagList(
+    tags$label(label, `for` = inputId),br(),
+    tags$textarea(id="Sequence", rows = 5, cols = 100, style="flow: none; width:100%;", "", type = "text",
+                  class="returnTextArea form-control")
+  )
+}
 
 shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", theme=shinytheme("cerulean"),
 	navbarPage(strong("FPOP"),
@@ -9,11 +18,13 @@ shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", t
 				wellPanel(
 					tags$label("Step 1 - Enter your input sequence(s) in FASTA format",style="float: none; width: 100%;"),
 					tags$textarea(id="Sequence", rows=5, cols=100, style="float: none; width:100%;", ""),
+					#includeScript("returnTextAreaBinding.js"),
+					#returnTextAreaInput2("ret2","Select 2:", "init text 2"),
 					tags$label("OR upload your FASTA file",style="float: none; width: 100%;"),
 					fileInput('file1', 'Choose file',accept=c('text/FASTA','FASTA','.fasta','.txt')),
 					tags$hr(),
 					tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
-					submitButton("Submit")
+					actionButton("mybutton", "Submit")
 		    		), #wellPanel
 		    		
 			    	mainPanel(
