@@ -1,5 +1,6 @@
 library(shiny)
 library(protr)
+library(seqinr)
 library(caret)
 library(randomForest)
 Train_DPC_PCP <- read.csv("Train_DPC_PCP.csv", header=TRUE)
@@ -11,10 +12,19 @@ fit <- randomForest(Oligomerization~., data = Train, importance=TRUE, ntree=2000
 
 shinyServer(function(input, output) {
 	datasetInput <- reactive({
-	 inFile <- input$file1
+    
+    
+	 inFile <- input$file1 
+	 infiel <- input$Sequence
+	 if (is.null(infiel)) {
+     return("Insert FASTA Files")
+	 } else {
+     if (is.null(inFile)) {
+       print(infiel)
+     } else {
+	 
+	   
 
-    if (is.null(inFile))
-      return("Please Insert FASTA Format")
 	   x <- readFASTA(inFile$datapath)
      x <- x[(sapply(x, protcheck))]
      DPC <- t(sapply(x, extractDC))
@@ -26,11 +36,15 @@ shinyServer(function(input, output) {
      results <- data.frame(results, row.names=NULL)
      print(results)
      
+}}
+     
 })
-  output$contents <- renderPrint({
 
-   
-      datasetInput()
+
+  output$contents <- renderPrint({
+    input$mybutton
+    isolate(datasetInput())
+
     
      
   })
