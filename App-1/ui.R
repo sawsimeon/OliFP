@@ -10,11 +10,7 @@ returnTextAreaInput2 <- function(inputId, label, value = "") {
                   class="returnTextArea form-control")
   )
 }
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 52e98f2d0db9bf60786a0f1e8581b72a3e202b0e
 
 shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", theme=shinytheme("cerulean"),
 	navbarPage(strong("FPOP"),

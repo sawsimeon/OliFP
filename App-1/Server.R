@@ -1,6 +1,6 @@
 library(shiny)
-library(protr)
 library(seqinr)
+library(protr)
 library(caret)
 library(randomForest)
 
@@ -9,50 +9,7 @@ Train <- Train_DPC_PCP[,1:401]
 fit <- randomForest(Oligomerization~., data = Train, importance=TRUE, ntree=2000)
 
 shinyServer(function(input, output) {
-<<<<<<< HEAD
-	datasetInput <- reactive({
-    
-    
-	 inFile <- input$file1 
-	 infiel <- input$Sequence
-	 if (is.null(infiel)) {
-     return("Insert FASTA Files")
-	 } else {
-     if (is.null(inFile)) {
-       print(infiel)
-     } else {
-	 
-	   
 
-	   x <- readFASTA(inFile$datapath)
-     x <- x[(sapply(x, protcheck))]
-     DPC <- t(sapply(x, extractDC))
-     test <- data.frame(DPC)
-     Prediction <- predict(fit, test)
-     Prediction <- as.data.frame(Prediction)
-     Protein <- cbind(Protein = rownames(Prediction, Prediction))
-     results <- cbind(Protein, Prediction)
-     results <- data.frame(results, row.names=NULL)
-     print(results)
-     
-}}
-     
-})
-
-
-  output$contents <- renderPrint({
-    input$mybutton
-    isolate(datasetInput())
-
-    
-     
-  })
-  output$downloadData <- downloadHandler(
-  filename = function() { paste('Predicted_Results', '.csv', sep='') },
-  content = function(file) {
-    write.csv(datasetInput(), file, row.names=FALSE)
-    })
-=======
      datasetInput <- reactive({
      
      inFile <- input$file1 
@@ -63,7 +20,19 @@ shinyServer(function(input, output) {
      } 
      else {
          if (is.null(inFile)) {
-             print(inTextbox)
+           x <- inTextbox
+           write.fasta(sequence = x, names = names(x),
+                       nbchar = 80, , file.out = "text.fasta")
+           x <- readFASTA("text.fasta")
+           x <- x[(sapply(x, protcheck))]
+           DPC <- t(sapply(x, extractDC))
+           test <- data.frame(DPC)
+           Prediction <- predict(fit, test)
+           Prediction <- as.data.frame(Prediction)
+           Protein <- cbind(Protein = rownames(Prediction, Prediction))
+           results <- cbind(Protein, Prediction)
+           results <- data.frame(results, row.names=NULL)
+           print(results)
          } 
          else {	   
              x <- readFASTA(inFile$datapath)
@@ -91,5 +60,5 @@ shinyServer(function(input, output) {
      content = function(file) {
      write.csv(datasetInput(), file, row.names=FALSE)
      })
->>>>>>> 52e98f2d0db9bf60786a0f1e8581b72a3e202b0e
+
 })
