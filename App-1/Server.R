@@ -9,26 +9,21 @@ Train <- Train_DPC_PCP[,1:401]
 fit <- randomForest(Oligomerization~., data = Train, importance=TRUE, ntree=2000)
 
 shinyServer(function(input, output, session) {
-<<<<<<< HEAD
-  
-  
-=======
-  ####################
   observe({
     FASTADATA <- ''
     fastaexample <- '>mCitrine-Monomer
-    DPMVSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKF
-    ILTTGKLPVPWPTLVTTFGYGLMVFARYPDHMKRHDFFKSAMPEGYVQER
-    TIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYN
-    SHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLP
-    DNHYLSYQSKLSKDPNEKRDHMVLLEFVTAAGITHGMDELYK
-    >amFP486(E150Q)-Tetramer
-    MRGSHHHHHHGSALSNKFIGDDMKMTYHMDGCVNGHYFTVKGEGNGKPY
-    EGTQTSTFKVTMANGGPLAFSFDILSTVFKYGNRCFTAYPTSMPDYFKQA
-    FPDGMSYERTFTYEDGGVATASWEISLKGNCFEHKSTFHGVNFPADGPVM
-    AKKTTGWDPSFQKMTVCDGILKGDVTAFLMLQGGGNYRCQFHTSYKTKKP
-    VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
-    '
+DPMVSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKF
+ILTTGKLPVPWPTLVTTFGYGLMVFARYPDHMKRHDFFKSAMPEGYVQER
+TIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYN
+SHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLP
+DNHYLSYQSKLSKDPNEKRDHMVLLEFVTAAGITHGMDELYK
+>amFP486(E150Q)-Tetramer
+MRGSHHHHHHGSALSNKFIGDDMKMTYHMDGCVNGHYFTVKGEGNGKPY
+EGTQTSTFKVTMANGGPLAFSFDILSTVFKYGNRCFTAYPTSMPDYFKQA
+FPDGMSYERTFTYEDGGVATASWEISLKGNCFEHKSTFHGVNFPADGPVM
+AKKTTGWDPSFQKMTVCDGILKGDVTAFLMLQGGGNYRCQFHTSYKTKKP
+VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
+'
     if(input$addlink>0) {
       isolate({
         FASTADATA <- fastaexample
@@ -36,20 +31,14 @@ shinyServer(function(input, output, session) {
     }
     updateTextInput(session, inputId = "Sequence", value = FASTADATA)
   })
-  ####################
->>>>>>> 9fa14e5990b37eafe0786cf5b6ebe5a5b6921bcc
   
   datasetInput <- reactive({
     
     inFile <- input$file1 
     inTextbox <- input$Sequence
     
-<<<<<<< HEAD
     if (inTextbox == "") {
-=======
-    if (is.null(inTextbox)) {
->>>>>>> 9fa14e5990b37eafe0786cf5b6ebe5a5b6921bcc
-      return("Insert FASTA Files")
+      return("Please Insert FASTA Files")
     } 
     else {
       if (is.null(inFile)) {
@@ -81,32 +70,21 @@ shinyServer(function(input, output, session) {
         
       }
     }
-<<<<<<< HEAD
     
   })
   
   
-  
-  output$contents <- renderPrint({
-    input$mybutton
-    isolate(datasetInput())
-=======
-  })
   
   output$contents <- renderPrint({
     input$submitbutton
     isolate(datasetInput())
-    
->>>>>>> 9fa14e5990b37eafe0786cf5b6ebe5a5b6921bcc
   })
+  
   output$downloadData <- downloadHandler(
     filename = function() { paste('Predicted_Results', '.csv', sep='') },
     content = function(file) {
       write.csv(datasetInput(), file, row.names=FALSE)
     })
   
-<<<<<<< HEAD
+
 })
-=======
-})
->>>>>>> 9fa14e5990b37eafe0786cf5b6ebe5a5b6921bcc
