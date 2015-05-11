@@ -12,33 +12,34 @@ returnTextAreaInput2 <- function(inputId, label, value = "") {
 }
 
 
-shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", theme=shinytheme("cerulean"),
-	navbarPage(strong("FPOP"),
-	tabPanel("Submit Job", titlePanel("FPOP: Fluorescent Protein Oligomerization Predictor"),
-			sidebarLayout(
-				wellPanel(
-					tags$label("Step 1 - Enter your input sequence(s) in FASTA format",style="float: none; width: 100%;"),
-					tags$textarea(id="Sequence", rows=5, cols=100, style="float: none; width:100%;", ""),
-					#includeScript("returnTextAreaBinding.js"),
-					#returnTextAreaInput2("ret2","Select 2:", "init text 2"),
-					tags$label("OR upload your FASTA file",style="float: none; width: 100%;"),
-					fileInput('file1', 'Choose file',accept=c('text/FASTA','FASTA','.fasta','.txt')),
-					tags$hr(),
-					tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
-					actionButton("mybutton", "Submit")
-		    		), #wellPanel
-		    		
-			    	mainPanel(
-				    	verbatimTextOutput('contents'),
-			    		downloadButton('downloadData', 'Download CSV')
-		    		)	
-			) #sidebarLayout
-		), #tabPanel Submit Job
-
-	tabPanel("About", titlePanel("Fluorescent protein oligomerization"), div(includeMarkdown("about.md"), align="justify")),
-	tabPanel("Citing Us", titlePanel("Citing Us"), includeMarkdown("citingus.md")),
-	tabPanel("Contact", titlePanel("Contact"), includeMarkdown("contact.md"))	
-        
-	) #navbarPage
-	) #fluidPage	
-    	) #shinyUI
+shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", theme=shinytheme("cerulean"), shinyjs::useShinyjs(),
+                  navbarPage(strong("FPOP"),
+                             tabPanel("Submit Job", titlePanel("FPOP: Fluorescent Protein Oligomerization Predictor"),
+                                      sidebarLayout(
+                                        wellPanel(
+                                          tags$label("Step 1 - Enter your input sequence(s) in FASTA format",style="float: none; width: 100%;"),
+                                          tags$textarea(id="Sequence", rows=5, cols=100, style="float: none; width:100%;", ""),
+                                          #includeScript("returnTextAreaBinding.js"),
+                                          #returnTextAreaInput2("ret2","Select 2:", "init text 2"),
+                                          tags$label("OR upload your FASTA file",style="float: none; width: 100%;"),
+                                          fileInput('file1', 'Choose file',accept=c('text/FASTA','FASTA','.fasta','.txt')),
+                                          tags$hr(),
+                                          tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
+                                          actionButton("mybutton", "Submit")
+                                        ), #wellPanel
+                                        
+                                        mainPanel(
+  
+                                          verbatimTextOutput('contents'),
+                                          downloadButton('downloadData', 'Download CSV')
+                                        )	
+                                      ) #sidebarLayout
+                             ), #tabPanel Submit Job
+                             
+                             tabPanel("About", titlePanel("Fluorescent protein oligomerization"), div(includeMarkdown("about.md"), align="justify")),
+                             tabPanel("Citing Us", titlePanel("Citing Us"), includeMarkdown("citingus.md")),
+                             tabPanel("Contact", titlePanel("Contact"), includeMarkdown("contact.md"))	
+                             
+                  ) #navbarPage
+) #fluidPage	
+) #shinyUI
