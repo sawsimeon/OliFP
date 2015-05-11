@@ -38,11 +38,7 @@ VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
     inTextbox <- input$Sequence
     
     if (inTextbox == "") {
-<<<<<<< HEAD
-      return("Please Insert FASTA Files")
-=======
       return("Please insert/upload sequence in FASTA format")
->>>>>>> 9eb4f155bc5b3054d60e17a8e86c2e3dddcf7385
     } 
     else {
       if (is.null(inFile)) {
@@ -90,5 +86,5 @@ VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
       write.csv(datasetInput(), file, row.names=FALSE)
     })
   
-
-})
+  
+  })
