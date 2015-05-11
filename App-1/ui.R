@@ -3,31 +3,22 @@ library(shinythemes)
 library(protr)
 library(markdown)
 
-returnTextAreaInput2 <- function(inputId, label, value = "") {
-  tagList(
-    tags$label(label, `for` = inputId),br(),
-    tags$textarea(id="Sequence", rows = 5, cols = 100, style="flow: none; width:100%;", "", type = "text",
-                  class="returnTextArea form-control")
-  )
-}
 
 shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", theme=shinytheme("cerulean"),
                   navbarPage(strong("FPOP"),
                              tabPanel("Submit Job", titlePanel("FPOP: Fluorescent Protein Oligomerization Predictor"),
                                       sidebarLayout(
                                         wellPanel(
-                                          tags$label("Step 1 - Enter your input sequence(s) in FASTA format",style="float: none; width: 100%;"),
+                                          tags$label("Enter your input sequence(s) in FASTA format",style="float: none; width: 100%;"),
+                                          actionLink("addlink", "Insert example data"),
                                           tags$textarea(id="Sequence", rows=5, cols=100, style="float: none; width:100%;", ""),
-                                          #includeScript("returnTextAreaBinding.js"),
-                                          #returnTextAreaInput2("ret2","Select 2:", "init text 2"),
-                                          actionLink("addlink", "Insert example data"), ####################
-                                          tags$label("OR",style="float: none; width: 100%;"),
-                                          fileInput('file1', 'Upload file',accept=c('text/FASTA','FASTA','.fasta','.txt')),
-                                          tags$hr(),
-                                          tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
-                                          actionButton("submitbutton", "Submit", class="btn btn-primary")
+                                          #actionLink("addlink", "Insert example data"),
+                                          #tags$label("or",style="float: none; width: 100%;"),
+                                          fileInput('file1', 'or upload file',accept=c('text/FASTA','FASTA','.fasta','.txt')),
+                                         # tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
+                                          actionButton("submitbutton", "Submit", class = "btn btn-primary")
                                         ), #wellPanel
-                                        
+                                                                   
                                         mainPanel(
                                           verbatimTextOutput('contents'),
                                           downloadButton('downloadData', 'Download CSV')
