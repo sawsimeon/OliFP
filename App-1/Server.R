@@ -38,7 +38,11 @@ VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
     inTextbox <- input$Sequence
     
     if (inTextbox == "") {
+<<<<<<< HEAD
       return("Please Insert FASTA Files")
+=======
+      return("Please insert/upload sequence in FASTA format")
+>>>>>>> 9eb4f155bc5b3054d60e17a8e86c2e3dddcf7385
     } 
     else {
       if (is.null(inFile)) {
@@ -51,7 +55,7 @@ VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
         test <- data.frame(DPC)
         Prediction <- predict(fit, test)
         Prediction <- as.data.frame(Prediction)
-        Protein <- cbind(Protein = rownames(Prediction, Prediction))
+        Protein <- cbind(Name = rownames(Prediction, Prediction))
         results <- cbind(Protein, Prediction)
         results <- data.frame(results, row.names=NULL)
         print(results)

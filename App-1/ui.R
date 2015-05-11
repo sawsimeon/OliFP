@@ -9,13 +9,21 @@ shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", t
                              tabPanel("Submit Job", titlePanel("FPOP: Fluorescent Protein Oligomerization Predictor"),
                                       sidebarLayout(
                                         wellPanel(
-                                          tags$label("Step 1 - Enter your input sequence(s) in FASTA format",style="float: none; width: 100%;"),
+                                          tags$label("Enter your input sequence(s) in FASTA format",style="float: none; width: 100%;"),
+                                          actionLink("addlink", "Insert example data"),
                                           tags$textarea(id="Sequence", rows=5, cols=100, style="float: none; width:100%;", ""),
+<<<<<<< HEAD
                                           actionLink("addlink", "Insert example data"),
                                           tags$label("OR upload your FASTA file",style="float: none; width: 100%;"),
                                           fileInput('file1', 'Choose file',accept=c('text/FASTA','FASTA','.fasta','.txt')),
                                           tags$hr(),
                                           tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
+=======
+                                          #actionLink("addlink", "Insert example data"),
+                                          #tags$label("or",style="float: none; width: 100%;"),
+                                          fileInput('file1', 'or upload file',accept=c('text/FASTA','FASTA','.fasta','.txt')),
+                                         # tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
+>>>>>>> 9eb4f155bc5b3054d60e17a8e86c2e3dddcf7385
                                           actionButton("submitbutton", "Submit", class = "btn btn-primary")
                                         ), #wellPanel
                                                                    
