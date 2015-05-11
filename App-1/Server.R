@@ -9,22 +9,21 @@ Train <- Train_DPC_PCP[,1:401]
 fit <- randomForest(Oligomerization~., data = Train, importance=TRUE, ntree=2000)
 
 shinyServer(function(input, output, session) {
-  ####################
   observe({
     FASTADATA <- ''
     fastaexample <- '>mCitrine-Monomer
-    DPMVSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKF
-    ILTTGKLPVPWPTLVTTFGYGLMVFARYPDHMKRHDFFKSAMPEGYVQER
-    TIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYN
-    SHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLP
-    DNHYLSYQSKLSKDPNEKRDHMVLLEFVTAAGITHGMDELYK
-    >amFP486(E150Q)-Tetramer
-    MRGSHHHHHHGSALSNKFIGDDMKMTYHMDGCVNGHYFTVKGEGNGKPY
-    EGTQTSTFKVTMANGGPLAFSFDILSTVFKYGNRCFTAYPTSMPDYFKQA
-    FPDGMSYERTFTYEDGGVATASWEISLKGNCFEHKSTFHGVNFPADGPVM
-    AKKTTGWDPSFQKMTVCDGILKGDVTAFLMLQGGGNYRCQFHTSYKTKKP
-    VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
-    '
+DPMVSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKF
+ILTTGKLPVPWPTLVTTFGYGLMVFARYPDHMKRHDFFKSAMPEGYVQER
+TIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYN
+SHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLP
+DNHYLSYQSKLSKDPNEKRDHMVLLEFVTAAGITHGMDELYK
+>amFP486(E150Q)-Tetramer
+MRGSHHHHHHGSALSNKFIGDDMKMTYHMDGCVNGHYFTVKGEGNGKPY
+EGTQTSTFKVTMANGGPLAFSFDILSTVFKYGNRCFTAYPTSMPDYFKQA
+FPDGMSYERTFTYEDGGVATASWEISLKGNCFEHKSTFHGVNFPADGPVM
+AKKTTGWDPSFQKMTVCDGILKGDVTAFLMLQGGGNYRCQFHTSYKTKKP
+VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
+'
     if(input$addlink>0) {
       isolate({
         FASTADATA <- fastaexample
@@ -32,15 +31,14 @@ shinyServer(function(input, output, session) {
     }
     updateTextInput(session, inputId = "Sequence", value = FASTADATA)
   })
-  ####################
   
   datasetInput <- reactive({
     
     inFile <- input$file1 
     inTextbox <- input$Sequence
     
-    if (is.null(inTextbox)) {
-      return("Insert FASTA Files")
+    if (inTextbox == "") {
+      return("Please insert/upload sequence in FASTA format")
     } 
     else {
       if (is.null(inFile)) {
@@ -53,7 +51,7 @@ shinyServer(function(input, output, session) {
         test <- data.frame(DPC)
         Prediction <- predict(fit, test)
         Prediction <- as.data.frame(Prediction)
-        Protein <- cbind(Protein = rownames(Prediction, Prediction))
+        Protein <- cbind(Name = rownames(Prediction, Prediction))
         results <- cbind(Protein, Prediction)
         results <- data.frame(results, row.names=NULL)
         print(results)
@@ -72,17 +70,21 @@ shinyServer(function(input, output, session) {
         
       }
     }
+    
   })
+  
+  
   
   output$contents <- renderPrint({
     input$submitbutton
     isolate(datasetInput())
-    
   })
+  
   output$downloadData <- downloadHandler(
     filename = function() { paste('Predicted_Results', '.csv', sep='') },
     content = function(file) {
       write.csv(datasetInput(), file, row.names=FALSE)
     })
   
+
 })
