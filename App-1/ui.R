@@ -1,90 +1,35 @@
 library(shiny)
-library(seqinr)
+library(shinythemes)
 library(protr)
-library(caret)
-library(randomForest)
+library(markdown)
 
-Train_DPC_PCP <- read.csv("Train_DPC_PCP.csv", header=TRUE)
-Train <- Train_DPC_PCP[,1:401]
-fit <- randomForest(Oligomerization~., data = Train, importance=TRUE, ntree=2000)
 
-shinyServer(function(input, output, session) {
-  observe({
-    FASTADATA <- ''
-    fastaexample <- '>mCitrine-Monomer
-DPMVSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKF
-ILTTGKLPVPWPTLVTTFGYGLMVFARYPDHMKRHDFFKSAMPEGYVQER
-TIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYN
-SHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLP
-DNHYLSYQSKLSKDPNEKRDHMVLLEFVTAAGITHGMDELYK
->amFP486(E150Q)-Tetramer
-MRGSHHHHHHGSALSNKFIGDDMKMTYHMDGCVNGHYFTVKGEGNGKPY
-EGTQTSTFKVTMANGGPLAFSFDILSTVFKYGNRCFTAYPTSMPDYFKQA
-FPDGMSYERTFTYEDGGVATASWEISLKGNCFEHKSTFHGVNFPADGPVM
-AKKTTGWDPSFQKMTVCDGILKGDVTAFLMLQGGGNYRCQFHTSYKTKKP
-VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
-'
-    if(input$addlink>0) {
-      isolate({
-        FASTADATA <- fastaexample
-      })
-    }
-    updateTextInput(session, inputId = "Sequence", value = FASTADATA)
-  })
-  
-  datasetInput <- reactive({
-    
-    inFile <- input$file1 
-    inTextbox <- input$Sequence
-    
-    if (inTextbox == "") {
-      return("Please insert/upload sequence in FASTA format")
-    } 
-    else {
-      if (is.null(inFile)) {
-        x <- inTextbox
-        write.fasta(sequence = x, names = names(x),
-                    nbchar = 80, , file.out = "text.fasta")
-        x <- readFASTA("text.fasta")
-        x <- x[(sapply(x, protcheck))]
-        DPC <- t(sapply(x, extractDC))
-        test <- data.frame(DPC)
-        Prediction <- predict(fit, test)
-        Prediction <- as.data.frame(Prediction)
-        Protein <- cbind(Name = rownames(Prediction, Prediction))
-        results <- cbind(Protein, Prediction)
-        results <- data.frame(results, row.names=NULL)
-        print(results)
-      } 
-      else {     
-        x <- readFASTA(inFile$datapath)
-        x <- x[(sapply(x, protcheck))]
-        DPC <- t(sapply(x, extractDC))
-        test <- data.frame(DPC)
-        Prediction <- predict(fit, test)
-        Prediction <- as.data.frame(Prediction)
-        Protein <- cbind(Protein = rownames(Prediction, Prediction))
-        results <- cbind(Protein, Prediction)
-        results <- data.frame(results, row.names=NULL)
-        print(results)
-        
-      }
-    }
-    
-  })
-  
-  
-  
-  output$contents <- renderPrint({
-    input$submitbutton
-    isolate(datasetInput())
-  })
-  
-  output$downloadData <- downloadHandler(
-    filename = function() { paste('Predicted_Results', '.csv', sep='') },
-    content = function(file) {
-      write.csv(datasetInput(), file, row.names=FALSE)
-    })
-  
-
-})
+shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", theme=shinytheme("cerulean"),
+                  navbarPage(strong("FPOP"),
+                             tabPanel("Submit Job", titlePanel("FPOP: Fluorescent Protein Oligomerization Predictor"),
+                                      sidebarLayout(
+                                        wellPanel(
+                                          tags$label("Enter your input sequence(s) in FASTA format",style="float: none; width: 100%;"),
+                                          actionLink("addlink", "Insert example data"),
+                                          tags$textarea(id="Sequence", rows=5, cols=100, style="float: none; width:100%;", ""),
+                                          #actionLink("addlink", "Insert example data"),
+                                          #tags$label("or",style="float: none; width: 100%;"),
+                                          fileInput('file1', 'or upload file',accept=c('text/FASTA','FASTA','.fasta','.txt')),
+                                         # tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
+                                          actionButton("submitbutton", "Submit", class = "btn btn-primary")
+                                        ), #wellPanel
+                                                                   
+                                        mainPanel(
+                                          verbatimTextOutput('contents'),
+                                          downloadButton('downloadData', 'Download CSV')
+                                        )	
+                                      ) #sidebarLayout
+                             ), #tabPanel Submit Job
+                             
+                             tabPanel("About", titlePanel("Fluorescent protein oligomerization"), div(includeMarkdown("about.md"), align="justify")),
+                             tabPanel("Citing Us", titlePanel("Citing Us"), includeMarkdown("citingus.md")),
+                             tabPanel("Contact", titlePanel("Contact"), includeMarkdown("contact.md"))	
+                             
+                  ) #navbarPage
+) #fluidPage	
+) #shinyUI
