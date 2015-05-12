@@ -3,7 +3,6 @@ library(seqinr)
 library(protr)
 library(caret)
 library(randomForest)
-library(shinyjs)
 
 Train_DPC_PCP <- read.csv("Train_DPC_PCP.csv", header=TRUE)
 Train <- Train_DPC_PCP[,1:401]
