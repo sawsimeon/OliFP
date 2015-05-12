@@ -16,7 +16,8 @@ shinyUI(fluidPage(title="FPOP: Fluorescent Protein Oligomerization Predictor", t
                                           #tags$label("or",style="float: none; width: 100%;"),
                                           fileInput('file1', 'or upload file',accept=c('text/FASTA','FASTA','.fasta','.txt')),
                                           # tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
-                                          actionButton("submitbutton", "Submit", class = "btn btn-primary")
+                                          actionButton("submitbutton", "Submit", class = "btn btn-primary"),
+                                          actionButton("clearbutton", "Clear", class = "btn btn-primary")
                                         ), #wellPanel
                                         
                                         mainPanel(
