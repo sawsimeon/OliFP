@@ -36,29 +36,26 @@ VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
   })
   
   observe({
-    EmptyDATA <- ''
+    emptyDATA <- ""
     if(input$clearbutton>0) {
       isolate({
-        updateTextInput(session, inputId = "Sequence", value = EmptyDATA)
+        updateTextInput(session, inputId = "Sequence", value = emptyDATA) 
+        is.null(datasetInput())
+        
       })
     }
   })
   
-  observe({
-    EmptyDATA <- ''
-  input$clearbutton
-  updateTextInput(session, inputId = "Sequence", value = EmptyDATA)
-     })
-  
+
   datasetInput <- reactive({
     
     inFile <- input$file1 
     inTextbox <- input$Sequence
     
-    if (inTextbox == "") {
+    
+    if (is.null(inTextbox)) {
       return("Please insert/upload sequence in FASTA format")
-    } 
-    else {
+    } else {
       if (is.null(inFile)) {
         x <- inTextbox
         write.fasta(sequence = x, names = names(x),
@@ -89,13 +86,21 @@ VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
       }
     }
     
+    
   })
   
   
   
   output$contents <- renderPrint({
-    input$submitbutton
-    isolate(datasetInput())
+    if (input$submitbutton>0) { 
+    isolate(datasetInput()) 
+    } else {
+      if (input$clearbutton>0) {
+      isolate(is.null(datasetInput()))
+    } else {
+      return("Please insert/upload sequence in FASTA format")
+    }
+    }
   })
   
   output$downloadData <- downloadHandler(
@@ -105,8 +110,6 @@ VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
     })
   
   
-<<<<<<< HEAD
+
   })
-=======
-  })
->>>>>>> 8cde0b7e6969e2a7c69a11375d94a45e59b341b2
+
