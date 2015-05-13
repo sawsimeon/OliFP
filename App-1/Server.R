@@ -3,6 +3,7 @@ library(seqinr)
 library(protr)
 library(caret)
 library(randomForest)
+library(shinyjs)
 
 Train_DPC_PCP <- read.csv("Train_DPC_PCP.csv", header=TRUE)
 Train <- Train_DPC_PCP[,1:401]
@@ -29,9 +30,18 @@ VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
     if(input$addlink>0) {
       isolate({
         FASTADATA <- fastaexample
+        updateTextInput(session, inputId = "Sequence", value = FASTADATA)
       })
     }
-    updateTextInput(session, inputId = "Sequence", value = FASTADATA)
+  })
+  
+  observe({
+    EmptyDATA <- ''
+    if(input$clearbutton>0) {
+      isolate({
+        updateTextInput(session, inputId = "Sequence", value = EmptyDATA)
+      })
+    }
   })
   
   observe({
@@ -95,4 +105,8 @@ VTMPPNHVVEHRIARTDLDKGGNSVQLTEHAVAHITSVVPF
     })
   
   
+<<<<<<< HEAD
   })
+=======
+  })
+>>>>>>> 8cde0b7e6969e2a7c69a11375d94a45e59b341b2
